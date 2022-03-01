@@ -8,12 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.demo.domain.Categoria;
-import com.example.demo.domain.Cidade;
-import com.example.demo.domain.Estado;
 import com.example.demo.domain.Produto;
 import com.example.demo.repositories.CategoriaRepository;
-import com.example.demo.repositories.CidadeRepository;
-import com.example.demo.repositories.EstadoRepository;
 import com.example.demo.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -24,12 +20,7 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	@Autowired
 	private ProdutoRepository produtoRepository;
-	
-	@Autowired
-	private EstadoRepository estadoRepository;
-	
-	@Autowired
-	private CidadeRepository cidadeRepository;
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
