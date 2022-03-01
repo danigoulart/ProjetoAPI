@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 
 import com.example.demo.domain.enums.TipoCliente;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Cliente implements Serializable{
@@ -37,6 +38,7 @@ public class Cliente implements Serializable{
 	@JsonIgnore
 	private String senha;
 
+	@JsonManagedReference
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 
