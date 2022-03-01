@@ -1,11 +1,15 @@
 package com.example.demo.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Categoria implements Serializable {
@@ -13,11 +17,15 @@ public class Categoria implements Serializable {
 	
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	private String nome;
 
+	//Anotação indicando que a tabela vai se relacionar de Muitos para Muitos
+	@ManyToMany(mappedBy="categorias") //especificando que vai ser mapeado dentro de categoria
+	private List<Produto> produtos = new ArrayList<>(); //Declarando uma Lista de produtos, que vai ser mapeada a partir de categorias, utilizando o método List e Arraylist pra poder armazenar adequadamente
+	
 	public Categoria() {
 	}
 
@@ -27,8 +35,14 @@ public class Categoria implements Serializable {
 		this.id = id;
 		this.nome = nome;
 	}
-
-	// getters and setters
+	
+	// HashCode e Equals
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+	
+// Getters and Setters
 	public Integer getId() {
 		return id;
 	}
@@ -45,10 +59,12 @@ public class Categoria implements Serializable {
 		this.nome = nome;
 	}
 
-	// HashCode e Equals
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<Produto> produtos) {
+		this.produtos = produtos;
 	}
 
 	@Override
