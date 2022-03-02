@@ -22,9 +22,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-public class Cliente implements Serializable{
+public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -45,6 +45,13 @@ public class Cliente implements Serializable{
 	@ElementCollection
 	@CollectionTable(name = "TELEFONE")
 	private Set<String> telefones = new HashSet<>();
+
+	public Cliente() {
+	}
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "cliente")
+	private List<Pedido> pedidos = new ArrayList<>();
 
 	// construtor
 	public Cliente(Integer id, String nome, String email, String cpfOuCnpf, TipoCliente tipo, String senha) {
@@ -123,6 +130,18 @@ public class Cliente implements Serializable{
 		this.telefones = telefones;
 	}
 
+	public List<Pedido> getPedidos() {
+		return pedidos;
+	}
+
+	public void setPedidos(List<Pedido> pedidos) {
+		this.pedidos = pedidos;
+	}
+
+	public void setTipo(Integer tipo) {
+		this.tipo = tipo;
+	}
+
 	// HashCode
 	@Override
 	public int hashCode() {
@@ -140,5 +159,4 @@ public class Cliente implements Serializable{
 		Cliente other = (Cliente) obj;
 		return Objects.equals(id, other.id);
 	}
-
 }
