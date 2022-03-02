@@ -2,8 +2,10 @@ package com.example.demo.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,10 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable {
@@ -25,57 +26,84 @@ public class Produto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	private double preco;
+	private Double preco;
 
-	
-	@JsonBackReference //do outro lado da associação já foram buscado os objetos, então agr ele não busca mais
-	@ManyToMany //informa o relacionamento das tabelas
-	@JoinTable(name = "PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id")) //determina as colunas da tabela
+	@JsonIgnore 
+	@ManyToMany // informa o relacionamento das tabelas
+	@JoinTable(name = "PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id")) 																																																																																																																																														
 	private List<Categoria> categorias = new ArrayList<>();
 
-	// construtor vazio
-	public Produto() {
-		
+	@JsonIgnore
+	@OneToMany(mappedBy = "id.produto")
+	private Set<ItemPedido> itens = new HashSet<>();
+
+	public Set<ItemPedido> getItens() {
+		return itens;
 	}
-	// construtor
-	public Produto(Integer id, String nome, double preco) {
+
+	// construtor de Produto
+	public Produto() {
+
+	}
+
+	public Produto(Integer id, String nome, Double preco) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
 	}
-	
+
+	@JsonIgnore
+	public List<Pedido> getPedidos() {
+		List<Pedido> lista = new ArrayList<>();
+		for (ItemPedido x : itens) {
+			lista.add(x.getPedido());
+		}
+		return lista;
+	}
+
 	// Getters and Setters
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
+	}
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
 	public String getNome() {
 		return nome;
 	}
+
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public double getPreco() {
+
+	public Double getPreco() {
 		return preco;
 	}
-	public void setPreco(double preco) {
+
+	public void setPreco(Double preco) {
 		this.preco = preco;
 	}
+
 	public List<Categoria> getCategorias() {
 		return categorias;
 	}
+
 	public void setCategorias(List<Categoria> categorias) {
 		this.categorias = categorias;
 	}
-	
+
 	// hashcode
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -87,8 +115,5 @@ public class Produto implements Serializable {
 		Produto other = (Produto) obj;
 		return Objects.equals(id, other.id);
 	}
-
-
-	
 
 }
