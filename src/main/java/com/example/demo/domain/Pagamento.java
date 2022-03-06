@@ -1,7 +1,6 @@
 package com.example.demo.domain;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,46 +17,43 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
-public class Pagamento implements Serializable {
+public abstract class Pagamento implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	@Id
-	private Integer Id;
-	private EstadoPagamento estado;
-	
+	private Integer id;
+	private Integer estado;
+
 	@JsonIgnore
 	@OneToOne
-	@JoinColumn(name="pedido_id")
+	@JoinColumn(name = "pedido_id")
 	@MapsId
 	private Pedido pedido;
-	
+
 	public Pagamento() {
 	}
 
-	//Construtor
 	public Pagamento(Integer id, EstadoPagamento estado, Pedido pedido) {
 		super();
-		Id = id;
-		this.estado = estado;
+		this.id = id;
+		this.estado = (estado == null) ? null : estado.getCod();
 		this.pedido = pedido;
 	}
 
-	//Getters and Setters
 	public Integer getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Integer id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public EstadoPagamento getEstado() {
-		return estado;
+		return EstadoPagamento.toEnum(estado);
 	}
 
 	public void setEstado(EstadoPagamento estado) {
-		this.estado = estado;
+		this.estado = estado.getCod();
 	}
 
 	public Pedido getPedido() {
@@ -68,10 +64,12 @@ public class Pagamento implements Serializable {
 		this.pedido = pedido;
 	}
 
-	//HashCode
 	@Override
 	public int hashCode() {
-		return Objects.hash(Id);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
 	}
 
 	@Override
@@ -83,8 +81,12 @@ public class Pagamento implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Pagamento other = (Pagamento) obj;
-		return Objects.equals(Id, other.Id);
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
-	
-	
+
 }
